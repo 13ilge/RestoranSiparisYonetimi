@@ -1,0 +1,33 @@
+﻿<!-- Views/Garson/Index.cshtml -->
+@model IEnumerable<Garson>
+
+@{
+    ViewData["Title"] = "Garson Listesi";
+}
+
+<h2>Garson Listesi</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Ad</th>
+            <th>Soyad</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var garson in Model)
+        {
+            <tr>
+                <td>@garson.Ad</td>
+                <td>@garson.Soyad</td>
+                <td>
+                    <a href="@Url.Action("Edit", "Garson", new { id = garson.Garson_ID })" class="btn btn-primary">Düzenle</a>
+                    <a href="@Url.Action("Delete", "Garson", new { id = garson.Garson_ID })" class="btn btn-danger">Sil</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Create", "Garson")" class="btn btn-success">Yeni Garson Ekle</a>

@@ -1,0 +1,22 @@
+﻿<!-- Views/Garson/Edit.cshtml -->
+@model Garson
+
+@{
+    ViewData["Title"] = "Garson Düzenle";
+}
+
+<h2>Garson Düzenle</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" name="Garson_ID" value="@Model.Garson_ID" />
+    <div class="form-group">
+        <label for="Ad">Ad</label>
+        <input type="text" class="form-control" id="Ad" name="Ad" value="@Model.Ad" required />
+    </div>
+    <div class="form-group">
+        <label for="Soyad">Soyad</label>
+        <input type="text" class="form-control" id="Soyad" name="Soyad" value="@Model.Soyad" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a href="@Url.Action("Index", "Garson")" class="btn btn-secondary">Geri Dön</a>
+</form>

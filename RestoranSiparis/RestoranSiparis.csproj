@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.35" />
+    <PackageReference Include="Npgsql" Version="9.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\Kasiyer\" />
+    <Folder Include="Views\Musteri\" />
+    <Folder Include="Views\MutfakPersoneli\" />
+    <Folder Include="Views\Kategori\" />
+    <Folder Include="Views\Masa\" />
+    <Folder Include="Views\Odeme\" />
+    <Folder Include="Views\Rezervasyon\" />
+    <Folder Include="Views\Siparis\" />
+    <Folder Include="Views\SiparisUrun\" />
+    <Folder Include="Views\Stok\" />
+    <Folder Include="Views\Urunler\" />
+  </ItemGroup>
+
+</Project>

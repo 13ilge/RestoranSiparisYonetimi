@@ -1,0 +1,21 @@
+﻿<!-- Views/Garson/Delete.cshtml -->
+@model Garson
+
+@{
+    ViewData["Title"] = "Garson Sil";
+}
+
+<h2>Garson Sil</h2>
+
+<p>Bu garsonu silmek istediğinizden emin misiniz?</p>
+
+<div>
+    <p>Ad: @Model.Ad</p>
+    <p>Soyad: @Model.Soyad</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" name="id" value="@Model.Garson_ID" />
+    <button type="submit" class="btn btn-danger">Sil</button>
+    <a href="@Url.Action("Index", "Garson")" class="btn btn-secondary">İptal</a>
+</form>
