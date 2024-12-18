@@ -1,0 +1,54 @@
+﻿@model RestoranSiparis.Models.Odeme
+
+@{
+    ViewData["Title"] = "Ödeme Düzenle";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" name="Odeme_ID" value="@Model.Odeme_ID" />
+    <div class="form-group">
+        <label for="Kasiyer_ID">Kasiyer ID</label>
+        <input type="number" class="form-control" id="Kasiyer_ID" name="Kasiyer_ID" value="@Model.Kasiyer_ID" required />
+    </div>
+    <div class="form-group">
+        <label for="SiparisID">Sipariş ID</label>
+        <input type="number" class="form-control" id="SiparisID" name="SiparisID" value="@Model.SiparisID" required />
+    </div>
+    <div class="form-group">
+        <label for="Tarih">Tarih</label>
+        <input type="datetime-local" class="form-control" id="Tarih" name="Tarih" value="@Model.Tarih.ToString("yyyy-MM-ddTHH:mm")" required />
+    </div>
+    <div class="form-group">
+        @if(Model.OdemeTuru.Equals("Nakit")){ 
+                <label for="OdemeTuru">Ödeme Türü</label>
+                <select class="form-control" id="OdemeTuru" name="OdemeTuru" required>
+                    <option selected value="Nakit">Nakit</option>
+                    <option value="Kredi Kartı">Kredi Kartı</option>
+                    <option value="Banka Transferi">Banka Transferi</option>
+                </select>
+        }
+        else if (Model.OdemeTuru.Equals("Kredi Kartı")){
+                <label for="OdemeTuru">Ödeme Türü</label>
+                <select class="form-control" id="OdemeTuru" name="OdemeTuru" required>
+                    <option value="Nakit">Nakit</option>
+                    <option selected value="Kredi Kartı">Kredi Kartı</option>
+                    <option value="Banka Transferi">Banka Transferi</option>
+                </select>
+        }else{
+                <label for="OdemeTuru">Ödeme Türü</label>
+                <select class="form-control" id="OdemeTuru" name="OdemeTuru" required>
+                    <option value="Nakit">Nakit</option>
+                    <option value="Kredi Kartı">Kredi Kartı</option>
+                    <option selected value="Banka Transferi">Banka Transferi</option>
+                </select>
+        }
+
+    </div>
+    <div class="form-group">
+        <label for="Tutar">Tutar</label>
+        <input type="number" step="0.01" class="form-control" id="Tutar" name="Tutar" value="@Model.Tutar" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Güncelle</button>
+</form>

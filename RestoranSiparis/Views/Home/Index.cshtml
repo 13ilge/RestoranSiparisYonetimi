@@ -1,19 +1,7 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    <form method="post" asp-action="Insert">
-        <input type="text" name="Ad" placeholder="İsim"/>
-        <input type="text" name="Soyad" placeholder="Soyad"/>
-        <input type="number" name="Telefon" placeholder="Telefon"/>
-
-        <input type="submit" name="insert" value="Ekle" />
-    </form>
-    <button onclick="urunEkle()">Ürün Ekle</button>
-    <button onclick="urunSil()">Ürün Sil</button>
-    <div id="urunler"></div>
+    <h1 class="display-4 mt-5">Restoran Sipariş Yönetimi</h1>
 </div>
-<script src="~/js/urun.js"></script>

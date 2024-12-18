@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<RestoranSiparis.Models.Siparis>
 
-<h1>Siparişler</h1>
+<h2>Siparişler</h2>
 
 <table class="table">
     <thead>
@@ -25,15 +25,15 @@
                 <td>@siparis.Durum</td>
                 <td>@siparis.ToplamFiyat</td>
                 <td>
-                    <a href="@Url.Action("Edit", "Siparis", new { id = siparis.Siparis_ID })">Düzenle</a> |
-                    <a href="@Url.Action("Delete", "Siparis", new { id = siparis.Siparis_ID })">Sil</a>
+                    <a class="btn btn-primary" href=" @Url.Action("Edit", "Siparis", new { id = siparis.Siparis_ID })">Düzenle</a> 
+                    <a class="btn btn-danger" href=" @Url.Action("Delete", "Siparis", new { id = siparis.Siparis_ID })">Sil</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-<a href="@Url.Action("Create", "Siparis")">Yeni Sipariş Ekle</a>
+<a class="btn btn-success" href="@Url.Action("Create", "Siparis")">Yeni Sipariş Ekle</a>
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger">

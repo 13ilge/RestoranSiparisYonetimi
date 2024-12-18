@@ -1,100 +1,94 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 using RestoranSiparis.Models;
 using RestoranSiparis.Repositories;
 
-namespace RestoranSiparis.Controllers
+public class OdemeController : Controller
 {
-    
+    private readonly OdemeRepository _repository;
 
-    [Route("api/[controller]")]
-    [ApiController]
-    public class OdemeController : ControllerBase
+    public OdemeController(IConfiguration configuration)
     {
-        private readonly OdemeRepository _odemeRepository;
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        _repository = new OdemeRepository(connectionString);
+    }
 
-        public OdemeController(OdemeRepository odemeRepository)
+    // Tüm Ödemeleri Listeleme
+    public async Task<IActionResult> Index()
+    {
+        var odemeler = await _repository.GetAllAsync();
+        return View(odemeler);
+    }
+
+    // Yeni Ödeme Ekleme - GET
+    [HttpGet]
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    // Yeni Ödeme Ekleme - POST
+    [HttpPost]
+    public async Task<IActionResult> Create(Odeme odeme)
+    {
+        if (ModelState.IsValid)
         {
-            _odemeRepository = odemeRepository;
+            await _repository.AddAsync(odeme);
+            return RedirectToAction("Index");
         }
+        return View(odeme);
+    }
 
-        // Yeni ödeme oluşturma
-        [HttpPost]
-        public async Task<IActionResult> CreateOdeme([FromBody] Odeme odeme)
+    // Ödeme Silme - GET (Onay Sayfası)
+    [HttpGet]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var odeme = await _repository.GetOdemeByIdAsync(id);
+        if (odeme == null)
         {
-            if (odeme == null)
-            {
-                return BadRequest("Ödeme bilgileri geçersiz.");
-            }
-
-            var odemeId = await _odemeRepository.AddOdemeAsync(odeme);
-
-            return CreatedAtAction(nameof(GetOdemeById), new { id = odemeId }, odeme);
+            return NotFound();
         }
+        return View(odeme);
+    }
 
-        // Ödeme ID ile ödeme bilgilerini alma
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetOdemeById(int id)
+    // Ödeme Silme - POST (Gerçek Silme İşlemi)
+    [HttpPost]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        try
         {
-            var odeme = await _odemeRepository.GetOdemeByIdAsync(id);
-
-            if (odeme == null)
-            {
-                return NotFound($"Ödeme ID {id} ile eşleşen ödeme bulunamadı.");
-            }
-
-            return Ok(odeme);
+            await _repository.DeleteAsync(id);
+            return RedirectToAction("Index");
         }
-
-        // Sipariş ID ile ödeme bilgilerini alma
-        [HttpGet("siparis/{siparisId}")]
-        public async Task<IActionResult> GetOdemeBySiparisId(int siparisId)
+        catch (PostgresException ex) when (ex.SqlState == "23503")
         {
-            var odemeler = await _odemeRepository.GetOdemeBySiparisIdAsync(siparisId);
-
-            if (odemeler == null)
-            {
-                return NotFound($"Sipariş ID {siparisId} ile eşleşen ödemeler bulunamadı.");
-            }
-
-            return Ok(odemeler);
-        }
-
-        // Ödeme güncelleme
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateOdeme(int id, [FromBody] Odeme odeme)
-        {
-            if (id != odeme.Odeme_ID)
-            {
-                return BadRequest("Ödeme ID'leri eşleşmiyor.");
-            }
-
-            var existingOdeme = await _odemeRepository.GetOdemeByIdAsync(id);
-
-            if (existingOdeme == null)
-            {
-                return NotFound($"ID {id} ile ödeme bulunamadı.");
-            }
-
-            await _odemeRepository.UpdateOdemeAsync(odeme);
-
-            return NoContent();
-        }
-
-        // Ödeme silme
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOdeme(int id)
-        {
-            var existingOdeme = await _odemeRepository.GetOdemeByIdAsync(id);
-
-            if (existingOdeme == null)
-            {
-                return NotFound($"ID {id} ile ödeme bulunamadı.");
-            }
-
-            await _odemeRepository.DeleteOdemeAsync(id);
-
-            return NoContent();
+            // Kullanıcıya anlamlı bir hata mesajı göster
+            TempData["ErrorMessage"] = "Bu ödemeyi silemezsiniz çünkü ona bağlı kayıtlar bulunmaktadır.";
+            return RedirectToAction("Index");
         }
     }
 
+    // Ödeme Güncelleme - GET
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var odeme = await _repository.GetOdemeByIdAsync(id);
+        if (odeme == null)
+        {
+            return NotFound();
+        }
+        return View(odeme);
+    }
+
+    // Ödeme Güncelleme - POST
+    [HttpPost]
+    public async Task<IActionResult> Edit(Odeme odeme)
+    {
+        if (ModelState.IsValid)
+        {
+            await _repository.UpdateAsync(odeme);
+            return RedirectToAction("Index");
+        }
+        return View(odeme);
+    }
 }

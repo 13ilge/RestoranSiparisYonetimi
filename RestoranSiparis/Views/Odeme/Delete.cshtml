@@ -1,0 +1,28 @@
+﻿@model RestoranSiparis.Models.Odeme
+
+@{
+    ViewData["Title"] = "Ödeme Sil";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="alert alert-warning">
+    <p>Bu ödeme kaydını silmek istediğinize emin misiniz?</p>
+</div>
+
+<div>
+    <h3>Ödeme Bilgileri:</h3>
+    <ul>
+        <li><strong>Kasiyer ID:</strong> @Model.Kasiyer_ID</li>
+        <li><strong>Sipariş ID:</strong> @Model.SiparisID</li>
+        <li><strong>Tarih:</strong> @Model.Tarih</li>
+        <li><strong>Ödeme Türü:</strong> @Model.OdemeTuru</li>
+        <li><strong>Tutar:</strong> @Model.Tutar</li>
+    </ul>
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" name="id" value="@Model.Odeme_ID" />
+    <button type="submit" class="btn btn-danger">Evet, Sil</button>
+    <a href="@Url.Action("Index")" class="btn btn-secondary">İptal</a>
+</form>
