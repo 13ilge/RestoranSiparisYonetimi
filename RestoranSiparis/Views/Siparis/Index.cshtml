@@ -1,0 +1,42 @@
+﻿@model IEnumerable<RestoranSiparis.Models.Siparis>
+
+<h1>Siparişler</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Sipariş ID</th>
+            <th>Masa ID</th>
+            <th>Mutfak ID</th>
+            <th>Garson ID</th>
+            <th>Durum</th>
+            <th>Toplam Fiyat</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var siparis in Model)
+        {
+            <tr>
+                <td>@siparis.Siparis_ID</td>
+                <td>@siparis.Masa_ID</td>
+                <td>@siparis.Mutfak_ID</td>
+                <td>@siparis.Garson_ID</td>
+                <td>@siparis.Durum</td>
+                <td>@siparis.ToplamFiyat</td>
+                <td>
+                    <a href="@Url.Action("Edit", "Siparis", new { id = siparis.Siparis_ID })">Düzenle</a> |
+                    <a href="@Url.Action("Delete", "Siparis", new { id = siparis.Siparis_ID })">Sil</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Create", "Siparis")">Yeni Sipariş Ekle</a>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}

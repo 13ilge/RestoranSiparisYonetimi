@@ -49,7 +49,7 @@ namespace RestoranSiparis.Repositories
         public async Task<int> DeleteAsync(int id)
         {
             using var connection = new NpgsqlConnection(_connectionString);
-            var query = "DELETE FROM Kasiyer WHERE Kasiyer_ID = @id";
+            var query = "DELETE FROM Kasiyer WHERE Kasiyer_ID = @Id";
             return await connection.ExecuteAsync(query, new { id });
         }
     }

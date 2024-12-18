@@ -1,0 +1,21 @@
+﻿@model RestoranSiparis.Models.Stok
+
+@{
+    ViewData["Title"] = "Stok Sil";
+}
+
+<h2>Stok Sil</h2>
+
+<p>Bu stok kaydını silmek istediğinizden emin misiniz?</p>
+
+<div>
+    <p><strong>Ürün ID:</strong> @Model.Urun_ID</p>
+    <p><strong>Stok Durumu:</strong> @Model.StokDurum</p>
+    <p><strong>Güncelleme Tarihi:</strong> @Model.GuncellemeTarih.ToString("dd.MM.yyyy HH:mm")</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" name="Stok_ID" value="@Model.Stok_ID" />
+    <button type="submit" class="btn btn-danger">Sil</button>
+    <a href="@Url.Action("Index", "Stok")" class="btn btn-secondary">İptal</a>
+</form>

@@ -1,0 +1,16 @@
+﻿@model RestoranSiparis.Models.Urunler
+
+@{
+    ViewData["Title"] = "Ürünü Sil";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>Bu ürünü silmek istediğinizden emin misiniz?</p>
+<p><strong>@Model.Ad</strong></p>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" name="id" value="@Model.Urun_ID" />
+    <button type="submit" class="btn btn-danger">Sil</button>
+    <a href="@Url.Action("Index", "Urunler")" class="btn btn-secondary">Geri Dön</a>
+</form>

@@ -1,73 +1,94 @@
-﻿// Controllers/MutfakPersoneliController.cs
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 using RestoranSiparis.Models;
 using RestoranSiparis.Repositories;
 
-[Route("api/[controller]")]
-[ApiController]
-public class MutfakPersoneliController : ControllerBase
+public class MutfakPersoneliController : Controller
 {
     private readonly MutfakPersoneliRepository _repository;
 
-    public MutfakPersoneliController(MutfakPersoneliRepository repository)
+    public MutfakPersoneliController(IConfiguration configuration)
     {
-        _repository = repository;
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        _repository = new MutfakPersoneliRepository(connectionString);
     }
 
-    // GET: api/MutfakPersoneli
+    // Tüm Mutfak Personelini Listeleme
+    public async Task<IActionResult> Index()
+    {
+        var mutfakPersonelleri = await _repository.GetAllAsync();
+        return View(mutfakPersonelleri);
+    }
+
+    // Yeni Mutfak Personeli Ekleme - GET
     [HttpGet]
-    public ActionResult<IEnumerable<MutfakPersoneli>> Get()
+    public IActionResult Create()
     {
-        var mutfakPersoneli = _repository.GetAll();
-        return Ok(mutfakPersoneli);
+        return View();
     }
 
-    // GET: api/MutfakPersoneli/5
-    [HttpGet("{id}")]
-    public ActionResult<MutfakPersoneli> Get(int id)
-    {
-        var mutfakPersoneli = _repository.GetById(id);
-        if (mutfakPersoneli == null)
-        {
-            return NotFound();
-        }
-        return Ok(mutfakPersoneli);
-    }
-
-    // POST: api/MutfakPersoneli
+    // Yeni Mutfak Personeli Ekleme - POST
     [HttpPost]
-    public ActionResult<MutfakPersoneli> Post([FromBody] MutfakPersoneli mutfakPersoneli)
+    public async Task<IActionResult> Create(MutfakPersoneli personel)
     {
-        _repository.Add(mutfakPersoneli);
-        return CreatedAtAction(nameof(Get), new { id = mutfakPersoneli.MutfakP_ID }, mutfakPersoneli);
+        if (ModelState.IsValid)
+        {
+            await _repository.AddAsync(personel);
+            return RedirectToAction("Index");
+        }
+        return View(personel);
     }
 
-    // PUT: api/MutfakPersoneli/5
-    [HttpPut("{id}")]
-    public IActionResult Put(int id, [FromBody] MutfakPersoneli mutfakPersoneli)
+    // Mutfak Personeli Güncelleme - GET
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
     {
-        var existingPersonel = _repository.GetById(id);
-        if (existingPersonel == null)
+        var personel = await _repository.GetMutfakPersoneliByIdAsync(id);
+        if (personel == null)
         {
             return NotFound();
         }
-
-        mutfakPersoneli.MutfakP_ID = id;
-        _repository.Update(mutfakPersoneli);
-        return NoContent();
+        return View(personel);
     }
 
-    // DELETE: api/MutfakPersoneli/5
-    [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    // Mutfak Personeli Güncelleme - POST
+    [HttpPost]
+    public async Task<IActionResult> Edit(MutfakPersoneli personel)
     {
-        var existingPersonel = _repository.GetById(id);
-        if (existingPersonel == null)
+        if (ModelState.IsValid)
+        {
+            await _repository.UpdateAsync(personel);
+            return RedirectToAction("Index");
+        }
+        return View(personel);
+    }
+
+    // Mutfak Personeli Silme - GET
+    [HttpGet]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var personel = await _repository.GetMutfakPersoneliByIdAsync(id);
+        if (personel == null)
         {
             return NotFound();
         }
+        return View(personel);
+    }
 
-        _repository.Delete(id);
-        return NoContent();
+    // Mutfak Personeli Silme - POST
+    [HttpPost, ActionName("Delete")]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        try
+        {
+            await _repository.DeleteAsync(id);
+            return RedirectToAction("Index");
+        }
+        catch (PostgresException ex) when (ex.SqlState == "23503")
+        {
+            // Kullanıcıya anlamlı bir hata mesajı göster
+            TempData["ErrorMessage"] = "Bu kasiyeri silemezsiniz çünkü ona bağlı kayıtlar bulunmaktadır.";
+            return RedirectToAction("Index");
+        }
     }
 }

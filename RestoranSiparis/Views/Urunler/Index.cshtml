@@ -1,0 +1,34 @@
+﻿@model IEnumerable<RestoranSiparis.Models.Urunler>
+
+@{
+    ViewData["Title"] = "Ürün Listesi";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+    @foreach (var urun in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    @urun.Ad
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Kategori ID: @urun.Kategori_ID</p>
+                    <p class="card-text">Fiyat: @urun.Fiyat TL</p>
+                    <a href="@Url.Action("Edit", "Urunler", new { id = urun.Urun_ID })" class="btn btn-warning btn-block mb-2">Düzenle</a>
+                    <a href="@Url.Action("Delete", "Urunler", new { id = urun.Urun_ID })" class="btn btn-danger btn-block mb-2">Sil</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<a href="@Url.Action("Create", "Urunler")" class="btn btn-success">Yeni Ürün Ekle</a>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}

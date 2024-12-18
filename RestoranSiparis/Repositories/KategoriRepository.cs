@@ -27,7 +27,9 @@ namespace RestoranSiparis.Repositories
         {
             using var connection = new NpgsqlConnection(_connectionString);
             var query = "SELECT * FROM Kategori WHERE Kategori_ID = @id";
-            return await connection.QueryFirstOrDefaultAsync<Kategori>(query, new { id });
+            var kategori = await connection.QuerySingleOrDefaultAsync<Kategori>(query, new { id });
+
+            return kategori;
         }
 
         // Yeni Kategori Ekleme

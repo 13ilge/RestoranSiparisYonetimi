@@ -1,74 +1,48 @@
 ﻿using Dapper;
 using Npgsql;
 using RestoranSiparis.Models;
-using System.Collections.Generic;
-using System.Data;
-namespace RestoranSiparis.Repositories
+
+public class UrunlerRepository
 {
-    // Repositories/UrunlerRepository.cs
-    
+    private readonly string _connectionString;
 
-    public class UrunlerRepository
+    public UrunlerRepository(string connectionString)
     {
-        private readonly string _connectionString;
-
-        public UrunlerRepository(string connectionString)
-        {
-            _connectionString = connectionString;
-        }
-
-        // Tüm ürünleri listele
-        public IEnumerable<Urunler> GetAll()
-        {
-            using (IDbConnection dbConnection = new NpgsqlConnection(_connectionString))
-            {
-                dbConnection.Open();
-                return dbConnection.Query<Urunler>("SELECT * FROM Urunler");
-            }
-        }
-
-        // ID'ye göre ürün bul
-        public Urunler GetById(int id)
-        {
-            using (IDbConnection dbConnection = new NpgsqlConnection(_connectionString))
-            {
-                dbConnection.Open();
-                return dbConnection.QueryFirstOrDefault<Urunler>("SELECT * FROM Urunler WHERE Urun_ID = @Id", new { Id = id });
-            }
-        }
-
-        // Yeni ürün ekle
-        public void Add(Urunler urun)
-        {
-            using (IDbConnection dbConnection = new NpgsqlConnection(_connectionString))
-            {
-                dbConnection.Open();
-                string query = "INSERT INTO Urunler (Kategori_ID, Ad, StokDurum, Fiyat) VALUES (@Kategori_ID, @Ad, @StokDurum, @Fiyat)";
-                dbConnection.Execute(query, urun);
-            }
-        }
-
-        // Ürünü güncelle
-        public void Update(Urunler urun)
-        {
-            using (IDbConnection dbConnection = new NpgsqlConnection(_connectionString))
-            {
-                dbConnection.Open();
-                string query = "UPDATE Urunler SET Kategori_ID = @Kategori_ID, Ad = @Ad, StokDurum = @StokDurum, Fiyat = @Fiyat WHERE Urun_ID = @Urun_ID";
-                dbConnection.Execute(query, urun);
-            }
-        }
-
-        // Ürünü sil
-        public void Delete(int id)
-        {
-            using (IDbConnection dbConnection = new NpgsqlConnection(_connectionString))
-            {
-                dbConnection.Open();
-                string query = "DELETE FROM Urunler WHERE Urun_ID = @Id";
-                dbConnection.Execute(query, new { Id = id });
-            }
-        }
+        _connectionString = connectionString;
     }
 
+    public async Task<IEnumerable<Urunler>> GetAllAsync()
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        var query = "SELECT * FROM Urunler";
+        return await connection.QueryAsync<Urunler>(query);
+    }
+
+    public async Task<Urunler> GetByIdAsync(int id)
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        var query = "SELECT * FROM Urunler WHERE Urun_ID = @id";
+        return await connection.QueryFirstOrDefaultAsync<Urunler>(query, new { id });
+    }
+
+    public async Task AddAsync(Urunler urun)
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        var query = "INSERT INTO Urunler (Kategori_ID, Ad, Fiyat) VALUES (@Kategori_ID, @Ad, @Fiyat)";
+        await connection.ExecuteAsync(query, urun);
+    }
+
+    public async Task UpdateAsync(Urunler urun)
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        var query = "UPDATE Urunler SET Kategori_ID = @Kategori_ID, Ad = @Ad, Fiyat = @Fiyat WHERE Urun_ID = @Urun_ID";
+        await connection.ExecuteAsync(query, urun);
+    }
+  
+    public async Task DeleteAsync(int id)
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+        var query = "DELETE FROM Urunler WHERE Urun_ID = @id";
+        await connection.ExecuteAsync(query, new { id });
+    }
 }

@@ -1,0 +1,24 @@
+﻿@model RestoranSiparis.Models.Stok
+
+<h2>Yeni Stok Ekle</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <select name="Urun_ID" class="form-select">
+            <option value="0" selected disabled >Ürün Seç</option>
+            @foreach(var urun in ViewBag.urunler){
+                <option value="@urun.Urun_ID">@urun.Ad</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="StokDurum">Stok Durumu</label>
+        <input type="number" class="form-control" id="StokDurum" name="StokDurum" required />
+    </div>
+    <div class="form-group">
+        <label for="GuncellemeTarih">Güncelleme Tarihi</label>
+        <input type="datetime-local" class="form-control" id="GuncellemeTarih" name="GuncellemeTarih" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a href="@Url.Action("Index", "Stok")" class="btn btn-secondary">Geri Dön</a>
+</form>

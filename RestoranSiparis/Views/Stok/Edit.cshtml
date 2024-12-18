@@ -1,0 +1,25 @@
+﻿@model RestoranSiparis.Models.Stok
+
+@{
+    ViewData["Title"] = "Stok Düzenle";
+}
+
+<h2>Stok Düzenle</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" name="Stok_ID" value="@Model.Stok_ID" />
+    <div class="form-group">
+        <label for="Urun_ID">Ürün ID</label>
+        <input type="number" id="Urun_ID" name="Urun_ID" class="form-control" value="@Model.Urun_ID" required />
+    </div>
+    <div class="form-group">
+        <label for="StokDurum">Stok Durumu</label>
+        <input type="number" id="StokDurum" name="StokDurum" class="form-control" value="@Model.StokDurum" required />
+    </div>
+    <div class="form-group">
+        <label for="GuncellemeTarih">Güncelleme Tarihi</label>
+        <input type="datetime-local" id="GuncellemeTarih" name="GuncellemeTarih" class="form-control" value="@Model.GuncellemeTarih.ToString("yyyy-MM-ddTHH:mm")" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a href="@Url.Action("Index", "Stok")" class="btn btn-secondary">Geri</a>
+</form>

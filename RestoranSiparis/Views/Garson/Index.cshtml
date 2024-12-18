@@ -31,3 +31,10 @@
 </table>
 
 <a href="@Url.Action("Create", "Garson")" class="btn btn-success">Yeni Garson Ekle</a>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}

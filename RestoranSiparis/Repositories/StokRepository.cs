@@ -1,12 +1,11 @@
-﻿namespace RestoranSiparis.Repositories
-{
-    // Repositories/StokRepository.cs
-    using Dapper;
-    using Npgsql;
-    using RestoranSiparis.Models;
-    using System.Collections.Generic;
-    using System.Data;
+﻿using Dapper;
+using Npgsql;
+using RestoranSiparis.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
+namespace RestoranSiparis.Repositories
+{
     public class StokRepository
     {
         private readonly string _connectionString;
@@ -16,58 +15,40 @@
             _connectionString = connectionString;
         }
 
-        // Tüm stokları listele
-        public IEnumerable<Stok> GetAll()
+        public async Task<IEnumerable<Stok>> GetAllAsync()
         {
-            using (IDbConnection dbConnection = new NpgsqlConnection(_connectionString))
-            {
-                dbConnection.Open();
-                return dbConnection.Query<Stok>("SELECT * FROM Stok");
-            }
+            using var connection = new NpgsqlConnection(_connectionString);
+            var query = "SELECT * FROM Stok";
+            return await connection.QueryAsync<Stok>(query);
         }
 
-        // ID'ye göre stok bul
-        public Stok GetById(int id)
+        public async Task<int> AddAsync(Stok stok)
         {
-            using (IDbConnection dbConnection = new NpgsqlConnection(_connectionString))
-            {
-                dbConnection.Open();
-                return dbConnection.QueryFirstOrDefault<Stok>("SELECT * FROM Stok WHERE Stok_ID = @Id", new { Id = id });
-            }
+            using var connection = new NpgsqlConnection(_connectionString);
+            var query = "INSERT INTO Stok (Urun_ID, StokDurum, GuncellemeTarih) VALUES (@Urun_ID, @StokDurum, @GuncellemeTarih)";
+            return await connection.ExecuteAsync(query, stok);
         }
 
-        // Yeni stok ekle
-        public void Add(Stok stok)
+        public async Task<int> DeleteAsync(int id)
         {
-            using (IDbConnection dbConnection = new NpgsqlConnection(_connectionString))
-            {
-                dbConnection.Open();
-                string query = "INSERT INTO Stok (Urun_ID, StokDurum, GuncellemeTarih) VALUES (@Urun_ID, @StokDurum, @GuncellemeTarih)";
-                dbConnection.Execute(query, stok);
-            }
+            using var connection = new NpgsqlConnection(_connectionString);
+            var query = "DELETE FROM Stok WHERE Stok_ID = @id";
+            return await connection.ExecuteAsync(query, new { id });
         }
 
-        // Stok güncelle
-        public void Update(Stok stok)
+        public async Task<Stok> GetStokByIdAsync(int id)
         {
-            using (IDbConnection dbConnection = new NpgsqlConnection(_connectionString))
-            {
-                dbConnection.Open();
-                string query = "UPDATE Stok SET Urun_ID = @Urun_ID, StokDurum = @StokDurum, GuncellemeTarih = @GuncellemeTarih WHERE Stok_ID = @Stok_ID";
-                dbConnection.Execute(query, stok);
-            }
+            using var connection = new NpgsqlConnection(_connectionString);
+            var query = "SELECT * FROM Stok WHERE Stok_ID = @id";
+            return await connection.QueryFirstOrDefaultAsync<Stok>(query, new { id });
         }
 
-        // Stok sil
-        public void Delete(int id)
+        public async Task<int> UpdateAsync(Stok stok)
         {
-            using (IDbConnection dbConnection = new NpgsqlConnection(_connectionString))
-            {
-                dbConnection.Open();
-                string query = "DELETE FROM Stok WHERE Stok_ID = @Id";
-                dbConnection.Execute(query, new { Id = id });
-            }
+            using var connection = new NpgsqlConnection(_connectionString);
+            var query = "UPDATE Stok SET Urun_ID = @Urun_ID, StokDurum = @StokDurum, GuncellemeTarih = @GuncellemeTarih WHERE Stok_ID = @Stok_ID";
+            return await connection.ExecuteAsync(query, stok);
         }
     }
-
 }
+    

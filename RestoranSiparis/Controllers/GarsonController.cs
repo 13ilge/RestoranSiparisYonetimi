@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 using RestoranSiparis.Models;
 using RestoranSiparis.Repositories;
 
@@ -54,8 +55,17 @@ public class GarsonController : Controller
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        await _repository.DeleteAsync(id);
-        return RedirectToAction("Index");
+        try
+        {
+            await _repository.DeleteAsync(id);
+            return RedirectToAction("Index");
+        }
+        catch (PostgresException ex) when (ex.SqlState == "23503")
+        {
+            // Kullanıcıya anlamlı bir hata mesajı göster
+            TempData["ErrorMessage"] = "Bu garsonu silemezsiniz çünkü ona bağlı kayıtlar bulunmaktadır.";
+            return RedirectToAction("Index");
+        }
     }
 
     // Garson Güncelleme - GET

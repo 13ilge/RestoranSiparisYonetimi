@@ -1,13 +1,9 @@
 ﻿using Dapper;
 using Npgsql;
 using RestoranSiparis.Models;
-using System.Data;
 
 namespace RestoranSiparis.Repositories
 {
-    // Repositories/MutfakPersoneliRepository.cs
-    
-
     public class MutfakPersoneliRepository
     {
         private readonly string _connectionString;
@@ -17,58 +13,44 @@ namespace RestoranSiparis.Repositories
             _connectionString = connectionString;
         }
 
-        // Tüm mutfak personelini listele
-        public IEnumerable<MutfakPersoneli> GetAll()
+        // Tüm Mutfak Personelini Listeleme
+        public async Task<IEnumerable<MutfakPersoneli>> GetAllAsync()
         {
-            using (IDbConnection dbConnection = new NpgsqlConnection(_connectionString))
-            {
-                dbConnection.Open();
-                return dbConnection.Query<MutfakPersoneli>("SELECT * FROM MutfakPersoneli");
-            }
+            using var connection = new NpgsqlConnection(_connectionString);
+            var query = "SELECT * FROM MutfakPersoneli";
+            return await connection.QueryAsync<MutfakPersoneli>(query);
         }
 
-        // ID'ye göre mutfak personelini bul
-        public MutfakPersoneli GetById(int id)
+        // ID'ye Göre Mutfak Personeli Getirme
+        public async Task<MutfakPersoneli> GetMutfakPersoneliByIdAsync(int id)
         {
-            using (IDbConnection dbConnection = new NpgsqlConnection(_connectionString))
-            {
-                dbConnection.Open();
-                return dbConnection.QueryFirstOrDefault<MutfakPersoneli>("SELECT * FROM MutfakPersoneli WHERE MutfakP_ID = @Id", new { Id = id });
-            }
+            using var connection = new NpgsqlConnection(_connectionString);
+            var query = "SELECT * FROM MutfakPersoneli WHERE mutfakp_id = @id";
+            return await connection.QueryFirstOrDefaultAsync<MutfakPersoneli>(query, new { id });
         }
 
-        // Yeni mutfak personeli ekle
-        public void Add(MutfakPersoneli mutfakPersoneli)
+        // Yeni Mutfak Personeli Ekleme
+        public async Task<int> AddAsync(MutfakPersoneli personel)
         {
-            using (IDbConnection dbConnection = new NpgsqlConnection(_connectionString))
-            {
-                dbConnection.Open();
-                string query = "INSERT INTO MutfakPersoneli (Ad, Soyad) VALUES (@Ad, @Soyad)";
-                dbConnection.Execute(query, mutfakPersoneli);
-            }
+            using var connection = new NpgsqlConnection(_connectionString);
+            var query = "INSERT INTO MutfakPersoneli (Ad, Soyad) VALUES (@Ad, @Soyad)";
+            return await connection.ExecuteAsync(query, personel);
         }
 
-        // Mutfak personelini güncelle
-        public void Update(MutfakPersoneli mutfakPersoneli)
+        // Mutfak Personeli Güncelleme
+        public async Task<int> UpdateAsync(MutfakPersoneli personel)
         {
-            using (IDbConnection dbConnection = new NpgsqlConnection(_connectionString))
-            {
-                dbConnection.Open();
-                string query = "UPDATE MutfakPersoneli SET Ad = @Ad, Soyad = @Soyad WHERE MutfakP_ID = @MutfakP_ID";
-                dbConnection.Execute(query, mutfakPersoneli);
-            }
+            using var connection = new NpgsqlConnection(_connectionString);
+            var query = "UPDATE MutfakPersoneli SET Ad = @Ad, Soyad = @Soyad WHERE mutfakp_id = @mutfakp_id";
+            return await connection.ExecuteAsync(query, personel);
         }
 
-        // Mutfak personelini sil
-        public void Delete(int id)
+        // Mutfak Personeli Silme
+        public async Task<int> DeleteAsync(int id)
         {
-            using (IDbConnection dbConnection = new NpgsqlConnection(_connectionString))
-            {
-                dbConnection.Open();
-                string query = "DELETE FROM MutfakPersoneli WHERE MutfakP_ID = @Id";
-                dbConnection.Execute(query, new { Id = id });
-            }
+            using var connection = new NpgsqlConnection(_connectionString);
+            var query = "DELETE FROM MutfakPersoneli WHERE mutfakp_id = @id";
+            return await connection.ExecuteAsync(query, new { id });
         }
     }
-
 }

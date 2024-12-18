@@ -1,0 +1,20 @@
+﻿@model RestoranSiparis.Models.MutfakPersoneli
+
+@{
+    ViewData["Title"] = "Mutfak Personeli Sil";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p>Bu mutfak personelini silmek istediğinizden emin misiniz?</p>
+
+<div>
+    <p>Ad: @Model.Ad</p>
+    <p>Soyad: @Model.Soyad</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" name="id" value="@Model.MutfakP_ID" />
+    <button type="submit" class="btn btn-danger">Sil</button>
+    <a href="@Url.Action("Index", "MutfakPersoneli")" class="btn btn-secondary">İptal</a>
+</form>

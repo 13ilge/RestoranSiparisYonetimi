@@ -1,80 +1,87 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RestoranSiparis.Models;
 using RestoranSiparis.Repositories;
-using System.Collections.Generic;
 
-namespace RestoranSiparis.Controllers
+public class StokController : Controller
 {
-    // Controllers/StokController.cs
-    
-
-    [Route("api/[controller]")]
-    [ApiController]
-    public class StokController : ControllerBase
+    private readonly StokRepository _repository;
+    UrunlerRepository urunRepository;
+    public StokController(IConfiguration configuration)
     {
-        private readonly StokRepository _repository;
-
-        public StokController(StokRepository repository)
-        {
-            _repository = repository;
-        }
-
-        // GET: api/Stok
-        [HttpGet]
-        public ActionResult<IEnumerable<Stok>> Get()
-        {
-            var stoklar = _repository.GetAll();
-            return Ok(stoklar);
-        }
-
-        // GET: api/Stok/5
-        [HttpGet("{id}")]
-        public ActionResult<Stok> Get(int id)
-        {
-            var stok = _repository.GetById(id);
-            if (stok == null)
-            {
-                return NotFound();
-            }
-            return Ok(stok);
-        }
-
-        // POST: api/Stok
-        [HttpPost]
-        public ActionResult<Stok> Post([FromBody] Stok stok)
-        {
-            _repository.Add(stok);
-            return CreatedAtAction(nameof(Get), new { id = stok.Stok_ID }, stok);
-        }
-
-        // PUT: api/Stok/5
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Stok stok)
-        {
-            var existingStok = _repository.GetById(id);
-            if (existingStok == null)
-            {
-                return NotFound();
-            }
-
-            stok.Stok_ID = id;
-            _repository.Update(stok);
-            return NoContent();
-        }
-
-        // DELETE: api/Stok/5
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
-        {
-            var existingStok = _repository.GetById(id);
-            if (existingStok == null)
-            {
-                return NotFound();
-            }
-
-            _repository.Delete(id);
-            return NoContent();
-        }
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        _repository = new StokRepository(connectionString);
+       urunRepository = new UrunlerRepository(connectionString);
     }
 
+    // Tüm Stokları Listeleme
+    public async Task<IActionResult> Index()
+    {
+        var stoklar = await _repository.GetAllAsync();
+        return View(stoklar);
+    }
+
+    // Yeni Stok Ekleme - GET
+    [HttpGet]
+    public async Task<IActionResult> Create()
+    {
+        var urunler = await urunRepository.GetAllAsync();
+        ViewBag.urunler = urunler;
+        return View();
+    }
+
+    // Yeni Stok Ekleme - POST
+    [HttpPost]
+    public async Task<IActionResult> Create(Stok stok)
+    {
+        if (ModelState.IsValid)
+        {
+            await _repository.AddAsync(stok);
+            return RedirectToAction("Index");
+        }
+        return View(stok);
+    }
+
+    // Stok Silme - GET (Onay Sayfası)
+    [HttpGet]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var stok = await _repository.GetStokByIdAsync(id);
+        if (stok == null)
+        {
+            return NotFound();
+        }
+        return View(stok);
+    }
+
+    // Stok Silme - POST (Gerçek Silme İşlemi)
+    [HttpPost, ActionName("Delete")]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        await _repository.DeleteAsync(id);
+        return RedirectToAction("Index");
+    }
+
+    // Stok Güncelleme - GET
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var stok = await _repository.GetStokByIdAsync(id);
+        if (stok == null)
+        {
+            return NotFound();
+        }
+        return View(stok);
+    }
+
+    // Stok Güncelleme - POST
+    [HttpPost]
+    public async Task<IActionResult> Edit(Stok stok)
+    {
+        if (ModelState.IsValid)
+        {
+            await _repository.UpdateAsync(stok);
+            return RedirectToAction("Index");
+        }
+        return View(stok);
+    }
 }

@@ -1,80 +1,96 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 using RestoranSiparis.Models;
 using RestoranSiparis.Repositories;
-using System.Collections.Generic;
 
-namespace RestoranSiparis.Controllers
+public class UrunlerController : Controller
 {
-    // Controllers/UrunlerController.cs
-   
+    private readonly UrunlerRepository _repository;
 
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UrunlerController : ControllerBase
+    public UrunlerController(IConfiguration configuration)
     {
-        private readonly UrunlerRepository _repository;
-
-        public UrunlerController(UrunlerRepository repository)
-        {
-            _repository = repository;
-        }
-
-        // GET: api/Urunler
-        [HttpGet]
-        public ActionResult<IEnumerable<Urunler>> Get()
-        {
-            var urunler = _repository.GetAll();
-            return Ok(urunler);
-        }
-
-        // GET: api/Urunler/5
-        [HttpGet("{id}")]
-        public ActionResult<Urunler> Get(int id)
-        {
-            var urun = _repository.GetById(id);
-            if (urun == null)
-            {
-                return NotFound();
-            }
-            return Ok(urun);
-        }
-
-        // POST: api/Urunler
-        [HttpPost]
-        public ActionResult<Urunler> Post([FromBody] Urunler urun)
-        {
-            _repository.Add(urun);
-            return CreatedAtAction(nameof(Get), new { id = urun.Urun_ID }, urun);
-        }
-
-        // PUT: api/Urunler/5
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Urunler urun)
-        {
-            var existingUrun = _repository.GetById(id);
-            if (existingUrun == null)
-            {
-                return NotFound();
-            }
-
-            urun.Urun_ID = id;
-            _repository.Update(urun);
-            return NoContent();
-        }
-
-        // DELETE: api/Urunler/5
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
-        {
-            var existingUrun = _repository.GetById(id);
-            if (existingUrun == null)
-            {
-                return NotFound();
-            }
-
-            _repository.Delete(id);
-            return NoContent();
-        }
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        _repository = new UrunlerRepository(connectionString);
+  
     }
 
+    // Ürünleri Listeleme
+    public async Task<IActionResult> Index()
+    {
+        var urunler = await _repository.GetAllAsync();
+        return View(urunler);
+    }
+
+  
+    // Yeni Ürün Ekleme - GET
+    [HttpGet]
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    // Yeni Ürün Ekleme - POST
+    [HttpPost]
+    public async Task<IActionResult> Create(Urunler urun)
+    {
+        if (ModelState.IsValid)
+        {
+            await _repository.AddAsync(urun);
+            return RedirectToAction("Index");
+        }
+        return View(urun);
+    }
+
+    // Ürün Güncelleme - GET
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var urun = await _repository.GetByIdAsync(id);
+        if (urun == null)
+        {
+            return NotFound();
+        }
+        return View(urun);
+    }
+
+    // Ürün Güncelleme - POST
+    [HttpPost]
+    public async Task<IActionResult> Edit(Urunler urun)
+    {
+        if (ModelState.IsValid)
+        {
+            await _repository.UpdateAsync(urun);
+            return RedirectToAction("Index");
+        }
+        return View(urun);
+    }
+
+    // Ürün Silme - GET
+    [HttpGet]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var urun = await _repository.GetByIdAsync(id);
+        if (urun == null)
+        {
+            return NotFound();
+        }
+        return View(urun);
+    }
+
+    // Ürün Silme - POST
+    [HttpPost, ActionName("Delete")]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        try
+        {
+            await _repository.DeleteAsync(id);
+            return RedirectToAction("Index");
+        }
+        catch (PostgresException ex) when (ex.SqlState == "23503")
+        {
+            // Kullanıcıya anlamlı bir hata mesajı göster
+            TempData["ErrorMessage"] = "Bu ürünü silemezsiniz çünkü ona bağlı kayıtlar bulunmaktadır.";
+            return RedirectToAction("Index");
+        }
+    }
 }

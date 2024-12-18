@@ -19,14 +19,7 @@ namespace RestoranSiparis.Controllers
             return View();
         }
 
-        public IActionResult Insert(Musteri musteri)
-        {
-            
-            MusteriRepository musteriRepository = new MusteriRepository("Host=localhost;Port=5432;Username=postgres;Password=admin;Database=restorandb");
-            musteriRepository.AddAsync(musteri);
-            return View("Index");
-        }
-
+       
         public IActionResult Privacy()  
         {
             return View();

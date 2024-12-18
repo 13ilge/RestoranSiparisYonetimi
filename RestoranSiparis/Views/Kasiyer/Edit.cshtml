@@ -1,0 +1,17 @@
+﻿@model RestoranSiparis.Models.Kasiyer
+
+<h2>Kasiyer Güncelle</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Kasiyer_ID" />
+    <div class="form-group">
+        <label for="Ad">Ad</label>
+        <input type="text" class="form-control" asp-for="Ad" required />
+    </div>
+    <div class="form-group">
+        <label for="Soyad">Soyad</label>
+        <input type="text" class="form-control" asp-for="Soyad" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">Geri</a>
+</form>

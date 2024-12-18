@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 using RestoranSiparis.Models;
 using RestoranSiparis.Repositories;
 namespace RestoranSiparis.Controllers
@@ -65,12 +66,35 @@ namespace RestoranSiparis.Controllers
             return View(kategori);
         }
 
-        // Kategori Silme
-        [HttpPost]
+        // Silme Onay Sayfası - GET
+        [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            await _repository.DeleteAsync(id);
-            return RedirectToAction("Index");
+            var kategori = await _repository.GetKategoriByIdAsync(id);
+            if (kategori == null)
+            {
+                return NotFound();
+            }
+
+            return View(kategori);
+        }
+
+        // Kategori Silme - POST
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            try
+            {
+                // Kategoriyi silme işlemi
+                await _repository.DeleteAsync(id);
+                return RedirectToAction("Index");
+            }
+            catch (PostgresException ex) when (ex.SqlState == "23503")
+            {
+                // Eğer yabancı anahtar hatası alırsak (örneğin kategori bir ürüne bağlıysa)
+                TempData["ErrorMessage"] = "Bu kategoriyi silemezsiniz çünkü ona bağlı ürünler bulunmaktadır.";
+                return RedirectToAction("Index");
+            }
         }
     }
 

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<RestoranSiparis.Models.Masa>
+
+@{
+    ViewData["Title"] = "Masa Listesi";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+    @foreach (var masa in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    Masa ID: @masa.Masa_ID
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Bu masayı düzenleyebilir ya da silebilirsiniz.</p>
+                    <a href="@Url.Action("Edit", "Masa", new { id = masa.Masa_ID })" class="btn btn-warning btn-block mb-2">Düzenle</a>
+                    <a href="@Url.Action("Delete", "Masa", new { id = masa.Masa_ID })" class="btn btn-danger btn-block">Sil</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<a href="@Url.Action("Create", "Masa")" class="btn btn-success mt-4">Yeni Masa Ekle</a>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}

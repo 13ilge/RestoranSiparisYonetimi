@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 using RestoranSiparis.Models;
 using RestoranSiparis.Repositories;
 
@@ -62,11 +63,31 @@ public class KasiyerController : Controller
         return View(kasiyer);
     }
 
-    // Kasiyer Silme
-    [HttpPost]
+    [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
-        await _repository.DeleteAsync(id);
-        return RedirectToAction("Index");
+        var garson = await _repository.GetKasiyerByIdAsync(id);
+        if (garson == null)
+        {
+            return NotFound();
+        }
+        return View(garson);
+    }
+
+    // Kasiyer Silme
+    [HttpPost,ActionName("Delete")]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        try
+        {
+            await _repository.DeleteAsync(id);
+            return RedirectToAction("Index");
+        }
+        catch (PostgresException ex) when (ex.SqlState == "23503")
+        {
+            // Kullanıcıya anlamlı bir hata mesajı göster
+            TempData["ErrorMessage"] = "Bu kasiyeri silemezsiniz çünkü ona bağlı ödeme kayıtları bulunmaktadır.";
+            return RedirectToAction("Index");
+        }
     }
 }

@@ -1,0 +1,37 @@
+﻿@model IEnumerable<RestoranSiparis.Models.Kategori>
+
+@{
+    ViewData["Title"] = "Kategori Listesi";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Kategori Adı</th>
+            <th>İşlemler</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var kategori in Model)
+        {
+            <tr>
+                <td>@kategori.KategoriAdi</td>
+                <td>
+                    <a href="@Url.Action("Edit", "Kategori", new { id = kategori.Kategori_ID })" class="btn btn-primary">Düzenle</a>
+                    <a href="@Url.Action("Delete", "Kategori", new { id = kategori.Kategori_ID })" class="btn btn-danger">Sil</a>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+
+<a href="@Url.Action("Create", "Kategori")" class="btn btn-success">Yeni Kategori Ekle</a>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}

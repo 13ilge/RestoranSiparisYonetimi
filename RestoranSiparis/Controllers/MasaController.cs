@@ -1,77 +1,94 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 using RestoranSiparis.Models;
 using RestoranSiparis.Repositories;
-namespace RestoranSiparis.Controllers
+
+public class MasaController : Controller
 {
-    
+    private readonly MasaRepository _repository;
 
-    public class MasaController : Controller
+    public MasaController(IConfiguration configuration)
     {
-        private readonly MasaRepository _repository;
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        _repository = new MasaRepository(connectionString);
+    }
 
-        public MasaController(IConfiguration configuration)
+    // Tüm Masaları Listeleme
+    public async Task<IActionResult> Index()
+    {
+        var masalar = await _repository.GetAllAsync();
+        return View(masalar);
+    }
+
+    // Yeni Masa Ekleme - GET
+    [HttpGet]
+    public IActionResult Create()
+    {
+        return View();
+    }
+
+    // Yeni Masa Ekleme - POST
+    [HttpPost]
+    public async Task<IActionResult> Create(Masa masa)
+    {
+        if (ModelState.IsValid)
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            _repository = new MasaRepository(connectionString);
+            await _repository.AddAsync(masa);
+            return RedirectToAction("Index");
         }
+        return View(masa);
+    }
 
-        // Tüm Masaları Listeleme
-        public async Task<IActionResult> Index()
+    // Masa Güncelleme - GET
+    [HttpGet]
+    public async Task<IActionResult> Edit(int id)
+    {
+        var masa = await _repository.GetMasaByIdAsync(id);
+        if (masa == null)
         {
-            var masalar = await _repository.GetAllAsync();
-            return View(masalar);
+            return NotFound();
         }
+        return View(masa);
+    }
 
-        // Yeni Masa Ekleme - GET
-        [HttpGet]
-        public IActionResult Create()
+    // Masa Güncelleme - POST
+    [HttpPost]
+    public async Task<IActionResult> Edit(Masa masa)
+    {
+        if (ModelState.IsValid)
         {
-            return View();
+            await _repository.UpdateAsync(masa);
+            return RedirectToAction("Index");
         }
+        return View(masa);
+    }
 
-        // Yeni Masa Ekleme - POST
-        [HttpPost]
-        public async Task<IActionResult> Create(Masa masa)
+    // Masa Silme - GET
+    [HttpGet]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var masa = await _repository.GetMasaByIdAsync(id);
+        if (masa == null)
         {
-            if (ModelState.IsValid)
-            {
-                await _repository.AddAsync(masa);
-                return RedirectToAction("Index");
-            }
-            return View(masa);
+            return NotFound();
         }
+        return View(masa);
+    }
 
-        // Masa Güncelleme - GET
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        {
-            var masa = await _repository.GetMasaByIdAsync(id);
-            if (masa == null)
-            {
-                return NotFound();
-            }
-            return View(masa);
-        }
-
-        // Masa Güncelleme - POST
-        [HttpPost]
-        public async Task<IActionResult> Edit(Masa masa)
-        {
-            if (ModelState.IsValid)
-            {
-                await _repository.UpdateAsync(masa);
-                return RedirectToAction("Index");
-            }
-            return View(masa);
-        }
-
-        // Masa Silme
-        [HttpPost]
-        public async Task<IActionResult> Delete(int id)
+    // Masa Silme - POST
+    [HttpPost, ActionName("Delete")]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        try
         {
             await _repository.DeleteAsync(id);
             return RedirectToAction("Index");
         }
+        catch (PostgresException ex) when (ex.SqlState == "23503")
+        {
+            // Kullanıcıya anlamlı bir hata mesajı göster
+            TempData["ErrorMessage"] = "Bu masayı silemezsiniz çünkü ona bağlı kayıtlar bulunmaktadır.";
+            return RedirectToAction("Index");
+        }
     }
-
 }

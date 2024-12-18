@@ -1,0 +1,18 @@
+﻿@model RestoranSiparis.Models.Siparis
+
+<h1>Siparişi Sil</h1>
+
+<p>Siparişi silmek istediğinizden emin misiniz?</p>
+
+<div>
+    <p><strong>Masa ID:</strong> @Model.Masa_ID</p>
+    <p><strong>Mutfak ID:</strong> @Model.Mutfak_ID</p>
+    <p><strong>Garson ID:</strong> @Model.Garson_ID</p>
+    <p><strong>Durum:</strong> @Model.Durum</p>
+    <p><strong>Toplam Fiyat:</strong> @Model.ToplamFiyat</p>
+</div>
+
+<form method="post">
+    <button type="submit" class="btn btn-danger">Sil</button>
+    <a href="@Url.Action("Index", "Siparis")" class="btn btn-secondary">İptal</a>
+</form>

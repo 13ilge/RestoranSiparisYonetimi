@@ -1,0 +1,17 @@
+﻿<!-- Views/Kategori/Create.cshtml -->
+@model Kategori
+
+@{
+    ViewData["Title"] = "Yeni Kategori Ekle";
+}
+
+<h2>Yeni Kategori Ekle</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="KategoriAdi">Kategori Adı</label>
+        <input type="text" class="form-control" id="KategoriAdi" name="KategoriAdi" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a href="@Url.Action("Index", "Kategori")" class="btn btn-secondary">Geri Dön</a>
+</form>

@@ -4,8 +4,6 @@ using RestoranSiparis.Models;
 
 namespace RestoranSiparis.Repositories
 {
-    
-
     public class MasaRepository
     {
         private readonly string _connectionString;
@@ -55,5 +53,4 @@ namespace RestoranSiparis.Repositories
             return await connection.ExecuteAsync(query, new { id });
         }
     }
-
 }

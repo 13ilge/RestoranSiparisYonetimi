@@ -1,0 +1,16 @@
+﻿@model RestoranSiparis.Models.Masa
+
+@{
+    ViewData["Title"] = "Yeni Masa Ekle";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="Masa_ID">Masa ID</label>
+        <input type="text" class="form-control" id="Masa_ID" name="Masa_ID" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a href="@Url.Action("Index", "Masa")" class="btn btn-secondary">Geri Dön</a>
+</form>

@@ -1,0 +1,37 @@
+﻿@model RestoranSiparis.Models.Siparis
+
+@{
+    ViewData["Title"] = "Yeni Sipariş Ekle";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="Masa_ID">Masa</label>
+        <input type="number" class="form-control" id="Masa_ID" name="Masa_ID" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Garson_ID">Garson</label>
+        <input type="number" class="form-control" id="Garson_ID" name="Garson_ID" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Mutfak_ID">Mutfak</label>
+        <input type="number" class="form-control" id="Mutfak_ID" name="Mutfak_ID" required />
+    </div>
+
+    <div class="form-group">
+        <label for="Durum">Durum</label>
+        <input type="text" class="form-control" id="Durum" name="Durum" required />
+    </div>
+
+    <div class="form-group">
+        <label for="ToplamFiyat">Toplam Fiyat</label>
+        <input type="number" class="form-control" id="ToplamFiyat" name="ToplamFiyat" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Kaydet</button>
+    <a href="@Url.Action("Index", "Siparis")" class="btn btn-secondary">Geri</a>
+</form>

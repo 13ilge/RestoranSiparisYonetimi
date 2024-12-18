@@ -1,0 +1,18 @@
+﻿@model RestoranSiparis.Models.Kategori
+
+@{
+    ViewData["Title"] = "Kategori Düzenle";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" name="Kategori_ID" value="@Model.Kategori_ID" />
+    <div class="form-group">
+        <label for="KategoriAdi">Kategori Adı</label>
+        <input type="text" id="KategoriAdi" name="KategoriAdi" class="form-control" value="@Model.KategoriAdi" required />
+    </div>
+    <input type="hidden" name="Kategori_ID" value="@Model.Kategori_ID" />
+    <button type="submit" class="btn btn-success">Kaydet</button>
+    <a href="@Url.Action("Index", "Kategori")" class="btn btn-secondary">Geri</a>
+</form>
