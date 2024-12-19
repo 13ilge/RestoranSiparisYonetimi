@@ -15,7 +15,6 @@ namespace RestoranSiparis.Repositories
             _connectionString = connectionString;
         }
 
-        // Siparişlerin tümünü al
         public async Task<IEnumerable<Siparis>> GetAllAsync()
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -23,7 +22,6 @@ namespace RestoranSiparis.Repositories
             return await connection.QueryAsync<Siparis>(query);
         }
 
-        // Yeni sipariş ekle
         public async Task<int> AddAsync(Siparis siparis)
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -31,7 +29,6 @@ namespace RestoranSiparis.Repositories
             return await connection.ExecuteAsync(query, siparis);
         }
 
-        // Siparişi ID'ye göre al
         public async Task<Siparis> GetSiparisByIdAsync(int id)
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -39,7 +36,6 @@ namespace RestoranSiparis.Repositories
             return await connection.QueryFirstOrDefaultAsync<Siparis>(query, new { id });
         }
 
-        // Siparişi güncelle
         public async Task<int> UpdateAsync(Siparis siparis)
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -47,7 +43,6 @@ namespace RestoranSiparis.Repositories
             return await connection.ExecuteAsync(query, siparis);
         }
 
-        // Siparişi sil
         public async Task<int> DeleteAsync(int id)
         {
             using var connection = new NpgsqlConnection(_connectionString);

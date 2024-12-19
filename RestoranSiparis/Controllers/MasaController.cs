@@ -13,21 +13,18 @@ public class MasaController : Controller
         _repository = new MasaRepository(connectionString);
     }
 
-    // Tüm Masaları Listeleme
     public async Task<IActionResult> Index()
     {
         var masalar = await _repository.GetAllAsync();
         return View(masalar);
     }
 
-    // Yeni Masa Ekleme - GET
     [HttpGet]
     public IActionResult Create()
     {
         return View();
     }
 
-    // Yeni Masa Ekleme - POST
     [HttpPost]
     public async Task<IActionResult> Create(Masa masa)
     {
@@ -39,7 +36,6 @@ public class MasaController : Controller
         return View(masa);
     }
 
-    // Masa Güncelleme - GET
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
@@ -51,7 +47,6 @@ public class MasaController : Controller
         return View(masa);
     }
 
-    // Masa Güncelleme - POST
     [HttpPost]
     public async Task<IActionResult> Edit(Masa masa)
     {
@@ -63,7 +58,6 @@ public class MasaController : Controller
         return View(masa);
     }
 
-    // Masa Silme - GET
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
@@ -75,7 +69,6 @@ public class MasaController : Controller
         return View(masa);
     }
 
-    // Masa Silme - POST
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
@@ -86,7 +79,6 @@ public class MasaController : Controller
         }
         catch (PostgresException ex) when (ex.SqlState == "23503")
         {
-            // Kullanıcıya anlamlı bir hata mesajı göster
             TempData["ErrorMessage"] = "Bu masayı silemezsiniz çünkü ona bağlı kayıtlar bulunmaktadır.";
             return RedirectToAction("Index");
         }

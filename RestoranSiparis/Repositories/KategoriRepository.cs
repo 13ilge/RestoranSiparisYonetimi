@@ -14,7 +14,6 @@ namespace RestoranSiparis.Repositories
             _connectionString = connectionString;
         }
 
-        // Tüm Kategorileri Listeleme
         public async Task<IEnumerable<Kategori>> GetAllAsync()
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -22,7 +21,6 @@ namespace RestoranSiparis.Repositories
             return await connection.QueryAsync<Kategori>(query);
         }
 
-        // ID'ye Göre Kategori Getirme
         public async Task<Kategori> GetKategoriByIdAsync(int id)
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -32,7 +30,6 @@ namespace RestoranSiparis.Repositories
             return kategori;
         }
 
-        // Yeni Kategori Ekleme
         public async Task<int> AddAsync(Kategori kategori)
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -40,7 +37,6 @@ namespace RestoranSiparis.Repositories
             return await connection.ExecuteAsync(query, kategori);
         }
 
-        // Kategori Güncelleme
         public async Task<int> UpdateAsync(Kategori kategori)
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -48,7 +44,6 @@ namespace RestoranSiparis.Repositories
             return await connection.ExecuteAsync(query, kategori);
         }
 
-        // Kategori Silme
         public async Task<int> DeleteAsync(int id)
         {
             using var connection = new NpgsqlConnection(_connectionString);

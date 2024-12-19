@@ -16,21 +16,18 @@ namespace RestoranSiparis.Controllers
             _repository = new KategoriRepository(connectionString);
         }
 
-        // Tüm Kategorileri Listeleme
         public async Task<IActionResult> Index()
         {
             var kategoriler = await _repository.GetAllAsync();
             return View(kategoriler);
         }
 
-        // Yeni Kategori Ekleme - GET
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        // Yeni Kategori Ekleme - POST
         [HttpPost]
         public async Task<IActionResult> Create(Kategori kategori)
         {
@@ -42,7 +39,6 @@ namespace RestoranSiparis.Controllers
             return View(kategori);
         }
 
-        // Kategori Güncelleme - GET
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -54,7 +50,6 @@ namespace RestoranSiparis.Controllers
             return View(kategori);
         }
 
-        // Kategori Güncelleme - POST
         [HttpPost]
         public async Task<IActionResult> Edit(Kategori kategori)
         {
@@ -66,7 +61,6 @@ namespace RestoranSiparis.Controllers
             return View(kategori);
         }
 
-        // Silme Onay Sayfası - GET
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -78,20 +72,16 @@ namespace RestoranSiparis.Controllers
 
             return View(kategori);
         }
-
-        // Kategori Silme - POST
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             try
             {
-                // Kategoriyi silme işlemi
                 await _repository.DeleteAsync(id);
                 return RedirectToAction("Index");
             }
             catch (PostgresException ex) when (ex.SqlState == "23503")
             {
-                // Eğer yabancı anahtar hatası alırsak (örneğin kategori bir ürüne bağlıysa)
                 TempData["ErrorMessage"] = "Bu kategoriyi silemezsiniz çünkü ona bağlı ürünler bulunmaktadır.";
                 return RedirectToAction("Index");
             }

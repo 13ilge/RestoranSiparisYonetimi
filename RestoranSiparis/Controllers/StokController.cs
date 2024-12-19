@@ -13,14 +13,12 @@ public class StokController : Controller
        urunRepository = new UrunlerRepository(connectionString);
     }
 
-    // Tüm Stokları Listeleme
     public async Task<IActionResult> Index()
     {
         var stoklar = await _repository.GetAllAsync();
         return View(stoklar);
     }
 
-    // Yeni Stok Ekleme - GET
     [HttpGet]
     public async Task<IActionResult> Create()
     {
@@ -29,7 +27,6 @@ public class StokController : Controller
         return View();
     }
 
-    // Yeni Stok Ekleme - POST
     [HttpPost]
     public async Task<IActionResult> Create(Stok stok)
     {
@@ -41,7 +38,6 @@ public class StokController : Controller
         return View(stok);
     }
 
-    // Stok Silme - GET (Onay Sayfası)
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
@@ -53,7 +49,6 @@ public class StokController : Controller
         return View(stok);
     }
 
-    // Stok Silme - POST (Gerçek Silme İşlemi)
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
@@ -61,7 +56,6 @@ public class StokController : Controller
         return RedirectToAction("Index");
     }
 
-    // Stok Güncelleme - GET
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
@@ -73,7 +67,6 @@ public class StokController : Controller
         return View(stok);
     }
 
-    // Stok Güncelleme - POST
     [HttpPost]
     public async Task<IActionResult> Edit(Stok stok)
     {

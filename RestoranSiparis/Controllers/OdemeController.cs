@@ -13,21 +13,18 @@ public class OdemeController : Controller
         _repository = new OdemeRepository(connectionString);
     }
 
-    // Tüm Ödemeleri Listeleme
     public async Task<IActionResult> Index()
     {
         var odemeler = await _repository.GetAllAsync();
         return View(odemeler);
     }
 
-    // Yeni Ödeme Ekleme - GET
     [HttpGet]
     public IActionResult Create()
     {
         return View();
     }
 
-    // Yeni Ödeme Ekleme - POST
     [HttpPost]
     public async Task<IActionResult> Create(Odeme odeme)
     {
@@ -39,7 +36,6 @@ public class OdemeController : Controller
         return View(odeme);
     }
 
-    // Ödeme Silme - GET (Onay Sayfası)
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
@@ -51,7 +47,6 @@ public class OdemeController : Controller
         return View(odeme);
     }
 
-    // Ödeme Silme - POST (Gerçek Silme İşlemi)
     [HttpPost]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
@@ -62,13 +57,11 @@ public class OdemeController : Controller
         }
         catch (PostgresException ex) when (ex.SqlState == "23503")
         {
-            // Kullanıcıya anlamlı bir hata mesajı göster
             TempData["ErrorMessage"] = "Bu ödemeyi silemezsiniz çünkü ona bağlı kayıtlar bulunmaktadır.";
             return RedirectToAction("Index");
         }
     }
 
-    // Ödeme Güncelleme - GET
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
@@ -80,7 +73,6 @@ public class OdemeController : Controller
         return View(odeme);
     }
 
-    // Ödeme Güncelleme - POST
     [HttpPost]
     public async Task<IActionResult> Edit(Odeme odeme)
     {

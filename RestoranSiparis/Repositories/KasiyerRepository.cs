@@ -13,7 +13,6 @@ namespace RestoranSiparis.Repositories
             _connectionString = connectionString;
         }
 
-        // Tüm Kasiyerleri Listeleme
         public async Task<IEnumerable<Kasiyer>> GetAllAsync()
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -21,7 +20,6 @@ namespace RestoranSiparis.Repositories
             return await connection.QueryAsync<Kasiyer>(query);
         }
 
-        // ID'ye Göre Kasiyer Getirme
         public async Task<Kasiyer> GetKasiyerByIdAsync(int id)
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -29,7 +27,6 @@ namespace RestoranSiparis.Repositories
             return await connection.QueryFirstOrDefaultAsync<Kasiyer>(query, new { id });
         }
 
-        // Yeni Kasiyer Ekleme
         public async Task<int> AddAsync(Kasiyer kasiyer)
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -37,7 +34,6 @@ namespace RestoranSiparis.Repositories
             return await connection.ExecuteAsync(query, kasiyer);
         }
 
-        // Kasiyer Güncelleme
         public async Task<int> UpdateAsync(Kasiyer kasiyer)
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -45,7 +41,6 @@ namespace RestoranSiparis.Repositories
             return await connection.ExecuteAsync(query, kasiyer);
         }
 
-        // Kasiyer Silme
         public async Task<int> DeleteAsync(int id)
         {
             using var connection = new NpgsqlConnection(_connectionString);

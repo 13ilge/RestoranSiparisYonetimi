@@ -13,21 +13,18 @@ public class KasiyerController : Controller
         _repository = new KasiyerRepository(connectionString);
     }
 
-    // Tüm Kasiyerleri Listeleme
     public async Task<IActionResult> Index()
     {
         var kasiyerler = await _repository.GetAllAsync();
         return View(kasiyerler);
     }
 
-    // Yeni Kasiyer Ekleme - GET
     [HttpGet]
     public IActionResult Create()
     {
         return View();
     }
 
-    // Yeni Kasiyer Ekleme - POST
     [HttpPost]
     public async Task<IActionResult> Create(Kasiyer kasiyer)
     {
@@ -39,7 +36,6 @@ public class KasiyerController : Controller
         return View(kasiyer);
     }
 
-    // Kasiyer Güncelleme - GET
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
@@ -51,7 +47,6 @@ public class KasiyerController : Controller
         return View(kasiyer);
     }
 
-    // Kasiyer Güncelleme - POST
     [HttpPost]
     public async Task<IActionResult> Edit(Kasiyer kasiyer)
     {
@@ -74,7 +69,6 @@ public class KasiyerController : Controller
         return View(garson);
     }
 
-    // Kasiyer Silme
     [HttpPost,ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
@@ -85,7 +79,6 @@ public class KasiyerController : Controller
         }
         catch (PostgresException ex) when (ex.SqlState == "23503")
         {
-            // Kullanıcıya anlamlı bir hata mesajı göster
             TempData["ErrorMessage"] = "Bu kasiyeri silemezsiniz çünkü ona bağlı ödeme kayıtları bulunmaktadır.";
             return RedirectToAction("Index");
         }

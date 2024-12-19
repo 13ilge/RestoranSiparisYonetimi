@@ -13,21 +13,18 @@ public class MutfakPersoneliController : Controller
         _repository = new MutfakPersoneliRepository(connectionString);
     }
 
-    // Tüm Mutfak Personelini Listeleme
     public async Task<IActionResult> Index()
     {
         var mutfakPersonelleri = await _repository.GetAllAsync();
         return View(mutfakPersonelleri);
     }
 
-    // Yeni Mutfak Personeli Ekleme - GET
     [HttpGet]
     public IActionResult Create()
     {
         return View();
     }
 
-    // Yeni Mutfak Personeli Ekleme - POST
     [HttpPost]
     public async Task<IActionResult> Create(MutfakPersoneli personel)
     {
@@ -39,7 +36,6 @@ public class MutfakPersoneliController : Controller
         return View(personel);
     }
 
-    // Mutfak Personeli Güncelleme - GET
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
@@ -51,7 +47,6 @@ public class MutfakPersoneliController : Controller
         return View(personel);
     }
 
-    // Mutfak Personeli Güncelleme - POST
     [HttpPost]
     public async Task<IActionResult> Edit(MutfakPersoneli personel)
     {
@@ -63,7 +58,6 @@ public class MutfakPersoneliController : Controller
         return View(personel);
     }
 
-    // Mutfak Personeli Silme - GET
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
@@ -75,7 +69,6 @@ public class MutfakPersoneliController : Controller
         return View(personel);
     }
 
-    // Mutfak Personeli Silme - POST
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
@@ -86,7 +79,6 @@ public class MutfakPersoneliController : Controller
         }
         catch (PostgresException ex) when (ex.SqlState == "23503")
         {
-            // Kullanıcıya anlamlı bir hata mesajı göster
             TempData["ErrorMessage"] = "Bu kasiyeri silemezsiniz çünkü ona bağlı kayıtlar bulunmaktadır.";
             return RedirectToAction("Index");
         }

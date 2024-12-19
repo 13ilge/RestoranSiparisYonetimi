@@ -13,7 +13,6 @@ namespace RestoranSiparis.Repositories
             _connectionString = connectionString;
         }
 
-        // Tüm Masaları Listeleme
         public async Task<IEnumerable<Masa>> GetAllAsync()
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -21,7 +20,6 @@ namespace RestoranSiparis.Repositories
             return await connection.QueryAsync<Masa>(query);
         }
 
-        // ID'ye Göre Masa Getirme
         public async Task<Masa> GetMasaByIdAsync(int id)
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -29,7 +27,6 @@ namespace RestoranSiparis.Repositories
             return await connection.QueryFirstOrDefaultAsync<Masa>(query, new { id });
         }
 
-        // Yeni Masa Ekleme
         public async Task<int> AddAsync(Masa masa)
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -37,7 +34,6 @@ namespace RestoranSiparis.Repositories
             return await connection.ExecuteAsync(query, masa);
         }
 
-        // Masa Güncelleme
         public async Task<int> UpdateAsync(Masa masa)
         {
             using var connection = new NpgsqlConnection(_connectionString);
@@ -45,7 +41,6 @@ namespace RestoranSiparis.Repositories
             return await connection.ExecuteAsync(query, masa);
         }
 
-        // Masa Silme
         public async Task<int> DeleteAsync(int id)
         {
             using var connection = new NpgsqlConnection(_connectionString);

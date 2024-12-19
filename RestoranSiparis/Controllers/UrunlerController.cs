@@ -14,7 +14,6 @@ public class UrunlerController : Controller
   
     }
 
-    // Ürünleri Listeleme
     public async Task<IActionResult> Index()
     {
         var urunler = await _repository.GetAllAsync();
@@ -22,14 +21,12 @@ public class UrunlerController : Controller
     }
 
   
-    // Yeni Ürün Ekleme - GET
     [HttpGet]
     public IActionResult Create()
     {
         return View();
     }
 
-    // Yeni Ürün Ekleme - POST
     [HttpPost]
     public async Task<IActionResult> Create(Urunler urun)
     {
@@ -41,7 +38,6 @@ public class UrunlerController : Controller
         return View(urun);
     }
 
-    // Ürün Güncelleme - GET
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
@@ -53,7 +49,6 @@ public class UrunlerController : Controller
         return View(urun);
     }
 
-    // Ürün Güncelleme - POST
     [HttpPost]
     public async Task<IActionResult> Edit(Urunler urun)
     {
@@ -65,7 +60,6 @@ public class UrunlerController : Controller
         return View(urun);
     }
 
-    // Ürün Silme - GET
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
@@ -77,7 +71,6 @@ public class UrunlerController : Controller
         return View(urun);
     }
 
-    // Ürün Silme - POST
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
@@ -88,7 +81,6 @@ public class UrunlerController : Controller
         }
         catch (PostgresException ex) when (ex.SqlState == "23503")
         {
-            // Kullanıcıya anlamlı bir hata mesajı göster
             TempData["ErrorMessage"] = "Bu ürünü silemezsiniz çünkü ona bağlı kayıtlar bulunmaktadır.";
             return RedirectToAction("Index");
         }

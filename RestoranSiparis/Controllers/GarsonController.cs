@@ -13,21 +13,18 @@ public class GarsonController : Controller
         _repository = new GarsonRepository(connectionString);
     }
 
-    // Tüm Garsonları Listeleme
     public async Task<IActionResult> Index()
     {
         var garsonlar = await _repository.GetAllAsync();
         return View(garsonlar);
     }
 
-    // Yeni Garson Ekleme - GET
     [HttpGet]
     public IActionResult Create()
     {
         return View();
     }
 
-    // Yeni Garson Ekleme - POST
     [HttpPost]
     public async Task<IActionResult> Create(Garson garson)
     {
@@ -39,7 +36,6 @@ public class GarsonController : Controller
         return View(garson);
     }
 
-    // Garson Silme - GET (Onay Sayfası)
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
@@ -51,7 +47,6 @@ public class GarsonController : Controller
         return View(garson);
     }
 
-    // Garson Silme - POST (Gerçek Silme İşlemi)
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
@@ -62,13 +57,11 @@ public class GarsonController : Controller
         }
         catch (PostgresException ex) when (ex.SqlState == "23503")
         {
-            // Kullanıcıya anlamlı bir hata mesajı göster
             TempData["ErrorMessage"] = "Bu garsonu silemezsiniz çünkü ona bağlı kayıtlar bulunmaktadır.";
             return RedirectToAction("Index");
         }
     }
 
-    // Garson Güncelleme - GET
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
@@ -80,7 +73,6 @@ public class GarsonController : Controller
         return View(garson);
     }
 
-    // Garson Güncelleme - POST
     [HttpPost]
     public async Task<IActionResult> Edit(Garson garson)
     {
